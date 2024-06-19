@@ -16,7 +16,7 @@
         "x86_64-linux"
       ];
       perSystem =
-        { pkgs, ... }:
+        { lib, pkgs, ... }:
         let
           # needs to match Stackage LTS version from stack.yaml snapshot
           hPkgs = pkgs.haskell.packages.ghc965;
@@ -65,11 +65,55 @@
           devShells.default = pkgs.mkShell {
             buildInputs = myDevTools;
             env = {
-              LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath myDevTools;
+              LD_LIBRARY_PATH = lib.makeLibraryPath myDevTools;
               RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
             };
           };
+
           formatter = pkgs.nixfmt-rfc-style;
+
+          packages.default =
+            let
+              os = if pkgs.stdenv.isDarwin then "osx" else "linux";
+              libExt = if pkgs.stdenv.isDarwin then "dylib" else "so";
+              libPath =
+                {
+                  osx = "DYLD_LIBRARY_PATH : \"$out/lib/links\"";
+                  linux = "LD_LIBRARY_PATH : \"$out/lib/links\"";
+                }
+                ."${os}";
+            in
+            (hPkgs.mkDerivation {
+              pname = "template-rust-ffi";
+              version = inputs.self.shortRev or inputs.self.dirtyShortRev;
+              src = pkgs.nix-gitignore.gitignoreSource [ ] ./.;
+
+              executableHaskellDepends = [ ];
+              libraryHaskellDepends = [ ];
+              testHaskellDepends = [
+                hPkgs.hspec
+                hPkgs.QuickCheck
+              ];
+
+              license = lib.licenses.mit;
+            }).overrideAttrs
+              (prev: {
+                nativeBuildInputs = (prev.nativeBuildInputs or [ ]) ++ [
+                  pkgs.cargo
+                  pkgs.rustPlatform.cargoSetupHook
+                  pkgs.makeWrapper
+                ];
+
+                cargoDeps = pkgs.rustPlatform.importCargoLock { lockFile = ./rust/Cargo.lock; };
+                cargoRoot = "rust";
+
+                postInstall = ''
+                  cp -f ./rust/target/release/librust.${libExt} $out/lib/links/librust.${libExt}
+
+                  wrapProgram $out/bin/${prev.mainProgram or prev.pname} \
+                    --prefix ${libPath}
+                '';
+              });
         };
     };
 }

@@ -3,6 +3,7 @@
 
 # nix
 .direnv/
+result
 
 # rust FFI
 rust/target/

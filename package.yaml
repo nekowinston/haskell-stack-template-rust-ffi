@@ -44,7 +44,7 @@ library:
   source-dirs: src
 
 executables:
-  template-rust-ffi-exe:
+  template-rust-ffi:
     main:                Main.hs
     source-dirs:         app
     ghc-options:

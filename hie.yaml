@@ -13,7 +13,7 @@ cradle:
           component: "template-rust-ffi:lib"
 
         - path: "./app/Main.hs"
-          component: "template-rust-ffi:exe:template-rust-ffi-exe"
+          component: "template-rust-ffi:exe:template-rust-ffi"
 
         - path: "./test"
           component: "template-rust-ffi:test:template-rust-ffi-test"
