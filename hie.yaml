@@ -1,0 +1,19 @@
+cradle:
+  multi:
+  - path: "./Setup.hs"
+    config:
+      cradle:
+        direct:
+          arguments: []
+  - path: "./"
+    config:
+      cradle:
+        stack:
+        - path: "./src"
+          component: "template-rust-ffi:lib"
+
+        - path: "./app/Main.hs"
+          component: "template-rust-ffi:exe:template-rust-ffi-exe"
+
+        - path: "./test"
+          component: "template-rust-ffi:test:template-rust-ffi-test"

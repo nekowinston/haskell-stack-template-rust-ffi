@@ -1,0 +1,8 @@
+.stack-work/
+*~
+
+# nix
+.direnv/
+
+# rust FFI
+rust/target/

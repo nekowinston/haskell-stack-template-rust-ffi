@@ -1,0 +1,68 @@
+name:                template-rust-ffi
+version:             0.1.0.0
+github:              "nekowinston/haskell-stack-template-rust-ffi"
+license:             MIT
+author:              "nekowinston"
+maintainer:          "hey@winston.sh"
+copyright:           "2024 nekowinston"
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/nekowinston/haskell-stack-template-rust-ffi#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+custom-setup:
+  dependencies:
+    - Cabal >= 3.8.0 && <4
+    - base >= 4.7 && <5
+    - directory >= 1.0 && <2
+    - filepath >= 1.0 && <2
+
+ghc-options:
+- -Wall
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wmissing-export-lists
+- -Wmissing-home-modules
+- -Wpartial-fields
+- -Wredundant-constraints
+
+library:
+  source-dirs: src
+
+executables:
+  template-rust-ffi-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - template-rust-ffi
+
+tests:
+  template-rust-ffi-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - hspec
+    - QuickCheck
+    - template-rust-ffi
